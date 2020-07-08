@@ -30,6 +30,16 @@
       </z-form-item>
       <button @click="submit('form')">提交</button>
     </z-form>
+    <p>{{ count }}</p>
+    <p>{{ showCount }}</p>
+    <button @click="add()">+1</button>
+    <button @click="asyncAdd()">delay +1</button>
+    <br />
+
+    <p>自定义{{ $ZStore.state.count }}</p>
+    <p>{{ $ZStore.getters.showCount }}</p>
+    <button @click="$ZStore.commit('add')">+1</button>
+    <button @click="$ZStore.dispatch('asyncAdd', 2)">delay +2</button>
   </div>
 </template>
 
@@ -40,6 +50,7 @@ import ZInput from '../components/zInput/index'
 import ZFormItem from '../components/zFormItem/index'
 import ZForm from '../components/zForm/index'
 import ZToast from '../components/zToast/index'
+import { mapState, mapGetters, mapMutations, mapActions } from "vuex";
 
 export default {
   name: 'Home',
@@ -62,7 +73,22 @@ export default {
       },
     }
   },
+  computed: {
+    ...mapState({
+      count: state=> state.count.count
+    }),
+    ...mapGetters({
+      showCount: 'count/showCount'
+    }),
+    
+  },
   methods: {
+    ...mapMutations({
+      add: 'count/add'
+    }),
+    ...mapActions({
+      asyncAdd: 'count/asyncAdd'
+    }),
     handleChange(value) {
       console.log(value);
     },

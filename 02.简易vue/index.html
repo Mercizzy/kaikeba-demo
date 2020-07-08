@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="./compile.js"></script>
+  <script src="./zue.js"></script>
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+    <p>{{ name }}</p>
+    <p z-text="name"></p>
+    <p>{{ count }}</p>
+    <p z-html="h2"></p>
+    <input z-model="count">
+    <button @click="changeInput">change</button>
+    <!-- <div z-model="count"></div> -->
+  </div>
+  <script>
+    const zue = new Zue({
+      el: "#app",
+      data: {
+        name: 'test',
+        count: 0,
+        h2: `<h2>hello</h2>`
+      },
+      created() {
+        setTimeout(()=> {
+          this.name = '121212'
+        }, 1000)
+      },
+      methods: {
+        changeInput() {
+          this.count = '999'
+          setTimeout(()=> {
+            this.changeInput2()
+          }, 1000)
+        },
+        changeInput2() {
+          this.count = '10000'
+        }
+      }
+    })
+    
+  </script>
+</body>
+</html>
