@@ -43,10 +43,10 @@ export class Observer {
     this.value = value
     this.dep = new Dep()
     this.vmCount = 0
-    def(value, '__ob__', this)
+    def(value, '__ob__', this)  // 将this挂载到value上，一方面可以根据__ob__来避免重复new Observer，另一方面可以直接通过value来找到自己的ob，从而实现一些ob的方法，例如更新
     if (Array.isArray(value)) {
       if (hasProto) {
-        protoAugment(value, arrayMethods)
+        protoAugment(value, arrayMethods) // arrayMethods包含了重写了的操作数组的7个方法，使得数组操作也可以响应式
       } else {
         copyAugment(value, arrayMethods, arrayKeys)
       }
@@ -187,7 +187,7 @@ export function defineReactive (
       } else {
         val = newVal
       }
-      childOb = !shallow && observe(newVal)
+      childOb = !shallow && observe(newVal)  // 重新赋值以后，又做了一次判断，将重新赋的值添加observer
       dep.notify()
     }
   })

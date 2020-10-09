@@ -29,15 +29,15 @@ methodsToPatch.forEach(function (method) {
     const ob = this.__ob__
     let inserted
     switch (method) {
-      case 'push':
+      case 'push':  // push和unshift一样都是向数组添加参数，所以push没有写break
       case 'unshift':
         inserted = args
         break
       case 'splice':
-        inserted = args.slice(2)
+        inserted = args.slice(2)  // splice(index, num, item1, item2)，splice从第三个参数开始代表向数组插入参数，所以取args.slice(2)
         break
     }
-    if (inserted) ob.observeArray(inserted)
+    if (inserted) ob.observeArray(inserted) //新增的参数也进行响应式操作
     // notify change
     ob.dep.notify()
     return result

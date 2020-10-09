@@ -74,7 +74,7 @@ export function createPatchFunction (backend) {
   const { modules, nodeOps } = backend
 
   for (i = 0; i < hooks.length; ++i) {
-    cbs[hooks[i]] = []
+    cbs[hooks[i]] = [] 
     for (j = 0; j < modules.length; ++j) {
       if (isDef(modules[j][hooks[i]])) {
         cbs[hooks[i]].push(modules[j][hooks[i]])
@@ -698,6 +698,7 @@ export function createPatchFunction (backend) {
   }
 
   return function patch (oldVnode, vnode, hydrating, removeOnly) {
+    // 旧树中存在，新树中不存在，删除节点
     if (isUndef(vnode)) {
       if (isDef(oldVnode)) invokeDestroyHook(oldVnode)
       return
@@ -706,14 +707,17 @@ export function createPatchFunction (backend) {
     let isInitialPatch = false
     const insertedVnodeQueue = []
 
+    // 旧树中不存在，新树中存在，新增节点
     if (isUndef(oldVnode)) {
       // empty mount (likely as component), create new root element
       isInitialPatch = true
       createElm(vnode, insertedVnodeQueue)
     } else {
+      // 改
       const isRealElement = isDef(oldVnode.nodeType)
       if (!isRealElement && sameVnode(oldVnode, vnode)) {
         // patch existing root node
+        // 自定义组件补丁操作
         patchVnode(oldVnode, vnode, insertedVnodeQueue, null, null, removeOnly)
       } else {
         if (isRealElement) {

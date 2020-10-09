@@ -45,7 +45,7 @@ class Compile {
   }
 
   compileText(node) {
-    console.log(this);
+    // console.log(this);
     
     const key = RegExp.$1.replace(/\s/g, "")
     this.update(node, key, 'text')

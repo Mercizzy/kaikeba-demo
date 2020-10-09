@@ -10,19 +10,21 @@ import { query } from './util/index'
 import { compileToFunctions } from './compiler/index'
 import { shouldDecodeNewlines, shouldDecodeNewlinesForHref } from './util/compat'
 
-const idToTemplate = cached(id => {
+// 通过id获取element
+const idToTemplate = cached(id => { // cached方法是缓存,cache(id)如果存在，直接返回cache(id),不存在则执行后续的方法
   const el = query(id)
   return el && el.innerHTML
 })
 
+// 挂载$mount,$mount中做了什么
 const mount = Vue.prototype.$mount
 Vue.prototype.$mount = function (
   el?: string | Element,
   hydrating?: boolean
 ): Component {
-  el = el && query(el)
+  el = el && query(el)  // 判断el是element还是string，如果是string，返回document.querySelector(el)
 
-  /* istanbul ignore if */
+  /* istanbul ignore if */  // 不允许将组件挂载在body和html上
   if (el === document.body || el === document.documentElement) {
     process.env.NODE_ENV !== 'production' && warn(
       `Do not mount Vue to <html> or <body> - mount to normal elements instead.`
@@ -32,11 +34,11 @@ Vue.prototype.$mount = function (
 
   const options = this.$options
   // resolve template/el and convert to render function
-  if (!options.render) {
+  if (!options.render) {  // 渲染等级：render > template > el
     let template = options.template
     if (template) {
       if (typeof template === 'string') {
-        if (template.charAt(0) === '#') {
+        if (template.charAt(0) === '#') { // 如果是'#app'这种类型
           template = idToTemplate(template)
           /* istanbul ignore if */
           if (process.env.NODE_ENV !== 'production' && !template) {
@@ -46,7 +48,7 @@ Vue.prototype.$mount = function (
             )
           }
         }
-      } else if (template.nodeType) {
+      } else if (template.nodeType) { // 如果是元素
         template = template.innerHTML
       } else {
         if (process.env.NODE_ENV !== 'production') {
@@ -63,6 +65,7 @@ Vue.prototype.$mount = function (
         mark('compile')
       }
 
+      // 解析模板
       const { render, staticRenderFns } = compileToFunctions(template, {
         outputSourceRange: process.env.NODE_ENV !== 'production',
         shouldDecodeNewlines,
@@ -70,6 +73,8 @@ Vue.prototype.$mount = function (
         delimiters: options.delimiters,
         comments: options.comments
       }, this)
+
+      // 将render函数赋值
       options.render = render
       options.staticRenderFns = staticRenderFns
 
@@ -92,7 +97,7 @@ function getOuterHTML (el: Element): string {
     return el.outerHTML
   } else {
     const container = document.createElement('div')
-    container.appendChild(el.cloneNode(true))
+    container.appendChild(el.cloneNode(true)) // 深克隆
     return container.innerHTML
   }
 }
